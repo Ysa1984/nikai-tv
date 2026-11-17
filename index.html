@@ -4,104 +4,134 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>شاشة المنزل - نيكاي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0b1220; --card:#121b2e; --card2:#182540; --fg:#eef3fb; --muted:#9fb0cc;
-  --ok:#49d888; --warn:#f0b24a; --bad:#ff6b6b; --accent:#5aa0ff;
+  --accent:#0a84ff; --accent2:#ff6a3d;
+  --glass-bg:rgba(255,255,255,.08); --glass-bg-solid:rgba(26,32,50,.92);
+  --glass-brd:rgba(255,255,255,.18); --glass-brd-solid:rgba(255,255,255,.1);
+  --blur:blur(24px) saturate(180%);
 }
+html.no-blur{ --glass-bg:var(--glass-bg-solid); --glass-brd:var(--glass-brd-solid); --blur:none; }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--fg);font-family:Tahoma,Arial,sans-serif;direction:rtl;height:100%;overflow:hidden}
+html,body{margin:0;background:#05070f;color:#fff;font-family:'Cairo',system-ui,sans-serif;height:100%;overflow:hidden;direction:rtl}
 button{font-family:inherit;cursor:pointer}
-#app{height:100vh;display:flex;flex-direction:column}
+#wallpaper{position:fixed;inset:-60px;z-index:0;background:
+  radial-gradient(circle at 15% 20%,rgba(255,110,80,.45),transparent 42%),
+  radial-gradient(circle at 80% 15%,rgba(255,180,60,.35),transparent 40%),
+  radial-gradient(circle at 70% 80%,rgba(80,120,255,.45),transparent 45%),
+  radial-gradient(circle at 10% 85%,rgba(150,80,255,.35),transparent 40%),
+  linear-gradient(160deg,#0a0e1c,#05070f 70%);filter:blur(2px)}
+#app{position:relative;z-index:1;height:100vh;display:flex;flex-direction:column}
 
 /* top bar */
-#top{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--card);flex-wrap:wrap}
-#top .logo{font-size:22px;font-weight:bold;color:var(--accent)}
-#top .clock{margin-right:auto;color:var(--muted);font-size:18px}
-#top button{background:var(--card2);color:var(--fg);border:0;border-radius:10px;padding:10px 16px;font-size:18px}
-#top button.active{background:var(--accent);color:#06101f;font-weight:bold}
+#top{margin:18px 24px 0 24px;display:flex;align-items:center;gap:14px;padding:12px 20px;border-radius:26px;
+  background:var(--glass-bg);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+#top .logo{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700}
+#top .logo .mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent2),#ff3b7f);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+#top .clock{margin-inline-end:auto;color:rgba(255,255,255,.6);font-size:14px}
+#top button.icon{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:15px}
+
+/* category pills */
+#cats{margin:14px 24px 0 24px;display:flex;gap:8px;padding:6px;border-radius:22px;background:rgba(255,255,255,.05);
+  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--glass-brd);width:fit-content;max-width:calc(100% - 48px);overflow-x:auto}
+#cats button{background:transparent;color:rgba(255,255,255,.7);border:0;border-radius:17px;padding:9px 18px;font-size:14.5px;font-weight:600;white-space:nowrap}
+#cats button.active{background:#fff;color:#111;font-weight:700}
 
 /* country chips */
-#chips{display:flex;gap:8px;padding:8px 16px;overflow-x:auto;background:#0e1626;white-space:nowrap}
-#chips button{background:var(--card2);color:var(--muted);border:0;border-radius:20px;padding:8px 14px;font-size:15px;flex:0 0 auto}
-#chips button.active{background:var(--accent);color:#06101f}
+#chips{margin:10px 24px 0 24px;display:flex;gap:8px;overflow-x:auto;white-space:nowrap}
+#chips button{background:rgba(255,255,255,.06);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:7px 14px;font-size:13px;flex:0 0 auto}
+#chips button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
 /* grid */
-#grid{flex:1;overflow-y:auto;padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-.ch{background:var(--card);border-radius:14px;padding:16px;text-align:center;border:2px solid transparent}
-.ch:hover,.ch:focus{border-color:var(--accent);outline:none}
-.ch .nm{font-size:18px;font-weight:bold}
-.ch .cc{color:var(--muted);font-size:13px;margin-top:4px}
+#grid{flex:1;overflow-y:auto;margin:14px 24px 20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;align-content:start}
+.ch{position:relative;border-radius:22px;aspect-ratio:4/3;overflow:hidden;cursor:pointer;
+  background:var(--glass-bg);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--glass-brd);display:flex;flex-direction:column;justify-content:flex-end}
+.ch .tint{position:absolute;inset:0;opacity:.5}
+.ch .info{padding:12px 14px;position:relative}
+.ch .nm{font-size:15.5px;font-weight:700}
+.ch .cc{font-size:11.5px;color:rgba(255,255,255,.65);margin-top:2px}
+.ch:focus,.ch:hover{outline:none;border-color:rgba(10,132,255,.8);box-shadow:0 0 0 3px rgba(10,132,255,.55),0 10px 26px rgba(10,132,255,.3);transform:scale(1.03)}
+#more{margin:0 24px 20px 24px;background:rgba(255,255,255,.08);border:1px solid var(--glass-brd);color:#fff;border-radius:16px;padding:13px;font-size:14.5px;font-weight:600}
 
 /* player */
 #player{position:fixed;inset:0;background:#000;display:none;z-index:50}
-#player video{width:100%;height:100%}
-#player #pbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:14px 20px;background:linear-gradient(#000a,transparent)}
-#player #pname{font-size:22px}
-#player #pclose{background:#ffffff22;color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:18px}
+#player video{width:100%;height:100%;object-fit:contain}
+#player #ptop{position:absolute;top:28px;left:40px;right:40px;display:flex;align-items:center;gap:14px;padding:12px 18px;border-radius:22px;
+  background:rgba(20,20,25,.5);backdrop-filter:blur(26px) saturate(180%);-webkit-backdrop-filter:blur(26px) saturate(180%);border:1px solid rgba(255,255,255,.16)}
+html.no-blur #player #ptop{background:rgba(20,20,25,.92)}
+#pname{font-size:18px;font-weight:700}
+#psub{font-size:12.5px;color:rgba(255,255,255,.6)}
+#pbot{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:18px;padding:12px 22px;border-radius:26px;
+  background:rgba(20,20,25,.5);backdrop-filter:blur(26px) saturate(180%);-webkit-backdrop-filter:blur(26px) saturate(180%);border:1px solid rgba(255,255,255,.16)}
+html.no-blur #pbot{background:rgba(20,20,25,.92)}
+#pbot button{background:transparent;border:0;color:#fff;font-size:17px}
+#pclose{background:rgba(255,255,255,.1)!important;border-radius:16px!important;padding:8px 16px!important;font-size:14px!important;font-weight:600}
 
-/* panel (pin/settings/smart home) */
-.overlay{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:60}
-.panel{background:var(--card);border-radius:18px;padding:28px;width:min(92vw,480px);max-height:88vh;overflow:auto}
-.panel h2{margin:0 0 14px;font-size:24px}
-.panel .sub{color:var(--muted);font-size:15px;margin-bottom:16px}
-.panel input{width:100%;font-size:26px;letter-spacing:8px;text-align:center;padding:14px;border-radius:10px;border:0;background:var(--card2);color:var(--fg);margin-bottom:12px}
-.panel button.go{width:100%;background:var(--accent);color:#06101f;font-weight:bold;border:0;border-radius:10px;padding:14px;font-size:18px;margin-top:4px}
-.panel .msg{min-height:22px;color:var(--warn);font-size:14px;text-align:center;margin-top:6px}
-.panel .row2{display:flex;gap:10px;margin-top:14px}
-.panel .row2 button{flex:1;background:var(--card2);color:var(--fg);border:0;border-radius:10px;padding:12px}
-.device{display:flex;justify-content:space-between;align-items:center;background:var(--card2);border-radius:12px;padding:14px;margin-bottom:10px}
-.device .name{font-size:17px}
-.device .state{font-size:13px;color:var(--muted)}
-.toggle{width:50px;height:28px;border-radius:14px;background:#2a3550;position:relative;border:0}
-.toggle.on{background:var(--ok)}
-.toggle .knob{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.15s}
-.toggle.on .knob{left:25px}
+/* overlay panels (pin/settings/smart home) */
+.overlay{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;z-index:60}
+.panel{border-radius:30px;background:rgba(255,255,255,.08);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);
+  border:1px solid var(--glass-brd);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 20px 60px rgba(0,0,0,.5);padding:34px;width:min(92vw,440px);max-height:88vh;overflow:auto;text-align:center}
+html.no-blur .panel{background:rgba(18,22,36,.96)}
+.panel h2{margin:0 0 6px;font-size:21px}
+.panel .sub{color:rgba(255,255,255,.6);font-size:13.5px;margin-bottom:16px}
+.dots{display:flex;justify-content:center;gap:14px;margin:20px 0 24px}
+.dot{width:15px;height:15px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3)}
+.dot.on{background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px rgba(10,132,255,.6)}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.keypad button{aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:20px;font-weight:600}
+.keypad button.fn{background:transparent;border:0;color:rgba(255,255,255,.55);font-size:13px}
+.msg{min-height:20px;color:#ffb44a;font-size:13px;margin-top:14px}
+.panel input{width:100%;font-size:15px;text-align:left;direction:ltr;padding:12px;border-radius:12px;border:1px solid var(--glass-brd);background:rgba(255,255,255,.06);color:#fff;margin-bottom:10px}
+.panel .go{width:100%;background:var(--accent);color:#fff;border:0;border-radius:14px;padding:13px;font-size:15px;font-weight:700;margin-top:6px}
+.panel .row2{display:flex;gap:10px;margin-top:12px}
+.panel .row2 button{flex:1;background:rgba(255,255,255,.08);border:1px solid var(--glass-brd);color:#fff;border-radius:14px;padding:11px}
+.device{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:12px 14px;margin-bottom:10px;text-align:right}
 </style>
 </head>
 <body>
+<div id="wallpaper"></div>
 <div id="app">
   <div id="top">
-    <div class="logo">شاشة المنزل</div>
+    <div class="logo"><div class="mark">ن</div>شاشة المنزل</div>
     <div class="clock" id="clock"></div>
-    <button data-cat="general">عام</button>
-    <button data-cat="news">أخبار</button>
-    <button data-cat="sport">رياضة</button>
-    <button data-cat="kids">أطفال</button>
-    <button data-cat="music">موسيقى</button>
-    <button data-cat="quran">قرآن</button>
-    <button id="btnSmart">المنزل الذكي</button>
-    <button id="btnSettings">⚙ الإعدادات</button>
+    <button class="icon" id="btnSmart">🏠</button>
+    <button class="icon" id="btnSettings">⚙</button>
   </div>
+  <div id="cats"></div>
   <div id="chips"></div>
   <div id="grid"></div>
 </div>
 
 <div id="player">
-  <div id="pbar"><div id="pname"></div><button id="pclose">إغلاق ✕</button></div>
-  <video id="vid" controls autoplay playsinline></video>
+  <div id="ptop"><div><div id="pname"></div><div id="psub"></div></div></div>
+  <video id="vid" autoplay playsinline></video>
+  <div id="pbot">
+    <button id="pplay">⏸</button>
+    <button id="pmute">🔊</button>
+    <button id="pclose">↩ القائمة</button>
+  </div>
 </div>
 
-<!-- PIN gate -->
 <div class="overlay" id="pinOverlay">
   <div class="panel">
-    <h2 id="pinTitle">رمز الحماية</h2>
+    <div style="width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 14px">🔒</div>
+    <h2 id="pinTitle"></h2>
     <div class="sub" id="pinSub"></div>
-    <input id="pinInput" inputmode="numeric" maxlength="6" placeholder="••••">
-    <button class="go" id="pinGo">تأكيد</button>
+    <div class="dots" id="pinDots"></div>
+    <div class="keypad" id="pinPad"></div>
     <div class="msg" id="pinMsg"></div>
   </div>
 </div>
 
-<!-- Settings panel -->
 <div class="overlay" id="setOverlay">
   <div class="panel">
     <h2>الإعدادات</h2>
-    <div class="sub">إعدادات الربط بالخادم (لمرة واحدة فقط)</div>
-    <div class="sub">رابط الخادم</div>
-    <input id="relayUrl" style="font-size:16px;letter-spacing:0;text-align:left;direction:ltr" placeholder="https://your-relay.workers.dev">
-    <div class="sub">رمز العائلة السري</div>
-    <input id="famCode" style="font-size:20px;letter-spacing:4px" placeholder="رمز العائلة">
+    <div class="sub">ربط الخادم (لمرة واحدة، اختياري الآن)</div>
+    <input id="relayUrl" placeholder="https://your-relay.workers.dev">
+    <input id="famCode" style="text-align:center;direction:ltr;letter-spacing:3px" placeholder="رمز العائلة">
     <button class="go" id="saveRelay">حفظ</button>
     <div class="row2">
       <button id="changePin">تغيير رمز الحماية</button>
@@ -110,12 +140,11 @@ button{font-family:inherit;cursor:pointer}
   </div>
 </div>
 
-<!-- Smart home panel -->
 <div class="overlay" id="smartOverlay">
   <div class="panel">
     <h2>المنزل الذكي</h2>
-    <div class="sub" id="smartSub">هذه الميزة تحتاج ربط حساب Tuya أولاً من الإعدادات</div>
-    <div id="smartList"></div>
+    <div class="sub" id="smartSub"></div>
+    <div id="smartList" style="text-align:right"></div>
     <div class="row2"><button id="closeSmart">إغلاق</button></div>
   </div>
 </div>
@@ -123,164 +152,185 @@ button{font-family:inherit;cursor:pointer}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.13/hls.min.js"></script>
 <script src="channels.js"></script>
 <script>
-/* ---------- storage helpers ---------- */
+/* feature detect backdrop-filter (old Chrome/WebView on this TV lacks it) */
+(function(){
+  var ok=false;
+  try{ ok = (window.CSS && CSS.supports && (CSS.supports('backdrop-filter','blur(2px)')||CSS.supports('-webkit-backdrop-filter','blur(2px)'))); }catch(e){}
+  if(!ok) document.documentElement.classList.add('no-blur');
+})();
+
 function LS_get(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function LS_set(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function LS_json(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function LS_setj(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 
-/* ---------- clock ---------- */
-function tickClock(){
-  var d=new Date();
-  document.getElementById('clock').textContent=d.toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});
-}
+function tickClock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'})}
 setInterval(tickClock,10000); tickClock();
 
-/* ================= PIN security (hash + lockout + forced setup) ================= */
+/* ===== PIN ===== */
 function pinHash(s){var h=5381;for(var i=0;i<s.length;i++){h=((h*33)^s.charCodeAt(i))>>>0}return 'h'+h}
-function pinWeak(p){
-  if(p.length<4) return true;
-  if(/^(\d)\1+$/.test(p)) return true;
-  if(['1234','4321','0000','1212','2580','1111','2222','3333'].indexOf(p)>=0) return true;
-  return false;
-}
+function pinWeak(p){if(p.length<4)return true;if(/^(\d)\1+$/.test(p))return true;return ['1234','4321','0000','1212','2580','1111','2222','3333'].indexOf(p)>=0}
 function pinFS(){return LS_json('fh_pinf',{n:0,u:0})}
-function pinLockLeft(){var f=pinFS();var left=f.u-Date.now();return left>0?left:0}
-function pinRecordFail(){
-  var f=pinFS(); f.n=(f.n||0)+1;
-  if(f.n>=3){ var wait=Math.min(3600000,60000*Math.pow(2,f.n-3)); f.u=Date.now()+wait; }
-  LS_setj('fh_pinf',f);
-}
+function pinLockLeft(){var f=pinFS();var l=f.u-Date.now();return l>0?l:0}
+function pinRecordFail(){var f=pinFS();f.n=(f.n||0)+1;if(f.n>=3){f.u=Date.now()+Math.min(3600000,60000*Math.pow(2,f.n-3))}LS_setj('fh_pinf',f)}
 function pinClearFail(){LS_setj('fh_pinf',{n:0,u:0})}
 
-var pinState={stage:0, tmp:'', onOk:null}; // stage: 0 normal verify, 1 choose new, 2 confirm new
-
+var pinState={stage:0,tmp:'',val:'',onOk:null};
+function pinBuildPad(){
+  var pad=document.getElementById('pinPad');
+  var keys=['١','٢','٣','٤','٥','٦','٧','٨','٩','fn:مسح','٠','fn:◀ حذف'];
+  var digits=['1','2','3','4','5','6','7','8','9','','0',''];
+  pad.innerHTML='';
+  keys.forEach(function(k,i){
+    var b=document.createElement('button');
+    if(k.indexOf('fn:')===0){ b.className='fn'; b.textContent=k.slice(3); b.dataset.act=i===9?'clear':'back'; }
+    else { b.textContent=k; b.dataset.d=digits[i]; }
+    b.addEventListener('click',function(){
+      if(b.dataset.act==='clear'){ pinState.val=''; }
+      else if(b.dataset.act==='back'){ pinState.val=pinState.val.slice(0,-1); }
+      else if(pinState.val.length<6){ pinState.val+=b.dataset.d; }
+      pinRenderDots();
+      if(pinState.val.length>=4 && !b.dataset.act){ setTimeout(pinMaybeSubmit,150); }
+    });
+    pad.appendChild(b);
+  });
+}
+function pinRenderDots(){
+  var d=document.getElementById('pinDots'); d.innerHTML='';
+  var n=Math.max(4,pinState.val.length);
+  for(var i=0;i<Math.max(4,n);i++){
+    var el=document.createElement('div'); el.className='dot'+(i<pinState.val.length?' on':''); d.appendChild(el);
+  }
+}
 function pinShow(onOk){
-  pinState.onOk=onOk;
+  pinState.onOk=onOk; pinState.val='';
   var hash=LS_get('fh_pinh','');
   pinState.stage = hash? 0 : 1;
-  pinRenderHead();
-  document.getElementById('pinInput').value='';
+  pinBuildPad(); pinRenderHead(); pinRenderDots();
   document.getElementById('pinMsg').textContent='';
   document.getElementById('pinOverlay').style.display='flex';
-  setTimeout(function(){document.getElementById('pinInput').focus()},50);
 }
 function pinRenderHead(){
   var t=document.getElementById('pinTitle'), s=document.getElementById('pinSub');
   var left=pinLockLeft();
-  if(left>0){ t.textContent='مقفل مؤقتاً'; s.textContent='حاول مرة أخرى بعد '+Math.ceil(left/1000)+' ثانية'; return }
-  if(pinState.stage===1){ t.textContent='إنشاء رمز حماية جديد'; s.textContent='اختر رمزاً من 4 أرقام على الأقل (ليس 1234 أو متكرر)'; }
-  else if(pinState.stage===2){ t.textContent='تأكيد الرمز'; s.textContent='أدخل الرمز مرة أخرى للتأكيد'; }
-  else { t.textContent='رمز الحماية'; s.textContent='أدخل الرمز للدخول إلى الإعدادات أو المنزل الذكي'; }
+  if(left>0){ t.textContent='مقفل مؤقتاً'; s.textContent='حاول بعد '+Math.ceil(left/1000)+' ثانية'; return }
+  if(pinState.stage===1){ t.textContent='إنشاء رمز حماية'; s.textContent='اختر ٤ أرقام على الأقل (ليس 1234 أو متكرر)'; }
+  else if(pinState.stage===2){ t.textContent='تأكيد الرمز'; s.textContent='أدخل نفس الرمز مرة أخرى'; }
+  else { t.textContent='رمز الحماية'; s.textContent='أدخل الرمز للمتابعة'; }
 }
-function pinSubmit(){
+function pinMaybeSubmit(){
   var left=pinLockLeft();
-  if(left>0){ pinRenderHead(); return }
-  var v=document.getElementById('pinInput').value.trim();
-  var msg=document.getElementById('pinMsg');
-  if(!v){return}
+  if(left>0){ pinRenderHead(); pinState.val=''; pinRenderDots(); return }
+  var v=pinState.val; var msg=document.getElementById('pinMsg');
   if(pinState.stage===1){
-    if(pinWeak(v)){ msg.textContent='هذا الرمز ضعيف جداً، اختر رمزاً آخر'; document.getElementById('pinInput').value=''; return }
-    pinState.tmp=v; pinState.stage=2; pinRenderHead(); document.getElementById('pinInput').value=''; msg.textContent=''; return
+    if(pinWeak(v)){ msg.textContent='رمز ضعيف، اختر غيره'; pinState.val=''; pinRenderDots(); return }
+    pinState.tmp=v; pinState.stage=2; pinState.val=''; pinRenderHead(); pinRenderDots(); msg.textContent=''; return
   }
   if(pinState.stage===2){
-    if(v!==pinState.tmp){ msg.textContent='الرمزان غير متطابقين، حاول من جديد'; pinState.stage=1; pinState.tmp=''; pinRenderHead(); document.getElementById('pinInput').value=''; return }
-    LS_set('fh_pinh', pinHash(v)); pinClearFail();
+    if(v!==pinState.tmp){ msg.textContent='غير متطابق، أعد المحاولة'; pinState.stage=1; pinState.tmp=''; pinState.val=''; pinRenderHead(); pinRenderDots(); return }
+    LS_set('fh_pinh',pinHash(v)); pinClearFail();
     document.getElementById('pinOverlay').style.display='none';
-    if(pinState.onOk) pinState.onOk();
-    return
+    if(pinState.onOk) pinState.onOk(); return
   }
-  // stage 0: verify
   var hash=LS_get('fh_pinh','');
   if(pinHash(v)===hash){
-    pinClearFail();
-    document.getElementById('pinOverlay').style.display='none';
+    pinClearFail(); document.getElementById('pinOverlay').style.display='none';
     if(pinState.onOk) pinState.onOk();
   } else {
-    pinRecordFail();
-    var left2=pinLockLeft();
-    if(left2>0){ pinRenderHead(); }
-    else { msg.textContent='رمز غير صحيح'; }
-    document.getElementById('pinInput').value='';
+    pinRecordFail(); pinState.val=''; pinRenderDots();
+    var l2=pinLockLeft();
+    if(l2>0){ pinRenderHead(); } else { msg.textContent='رمز غير صحيح'; }
   }
 }
-document.getElementById('pinGo').addEventListener('click',pinSubmit);
-document.getElementById('pinInput').addEventListener('keydown',function(e){if(e.key==='Enter')pinSubmit()});
+function pinForceChange(){ LS_set('fh_pinh',''); pinShow(function(){ document.getElementById('setOverlay').style.display='flex' }); }
 
-function pinForceChange(){
-  LS_set('fh_pinh','');
-  pinShow(function(){ document.getElementById('setOverlay').style.display='flex' });
-}
-
-/* ================= channels UI ================= */
+/* ===== channels ===== */
 var CATS={general:'عام',news:'أخبار',sport:'رياضة',kids:'أطفال',music:'موسيقى',quran:'قرآن'};
-var curCat='general', curCountry='all';
-
+var CAT_TINT={general:'rgba(90,160,255,.4)',news:'rgba(255,90,90,.35)',sport:'rgba(90,255,160,.35)',kids:'rgba(255,210,90,.4)',music:'rgba(200,120,255,.4)',quran:'rgba(120,255,210,.35)'};
+var curCat='general', curCountry='all', PAGE=48, shown=0, curList=[];
 function countryName(c){return (CH_DB.countries[c])||c}
 
 function renderChips(){
   var cat=CH_DB.categories[curCat]||[];
   var ccs={}; cat.forEach(function(c){ccs[c.c]=true});
   var html='<button data-cc="all" class="'+(curCountry==='all'?'active':'')+'">الكل</button>';
-  Object.keys(ccs).sort(function(a,b){ return (a==='om'?-1:b==='om'?1:countryName(a).localeCompare(countryName(b))) })
+  Object.keys(ccs).sort(function(a,b){return (a==='om'?-1:b==='om'?1:countryName(a).localeCompare(countryName(b)))})
    .forEach(function(c){html+='<button data-cc="'+c+'" class="'+(curCountry===c?'active':'')+'">'+countryName(c)+'</button>'});
   document.getElementById('chips').innerHTML=html;
 }
-function renderGrid(){
-  var list=(CH_DB.categories[curCat]||[]).filter(function(c){return curCountry==='all'||c.c===curCountry});
-  var html='';
-  list.forEach(function(c,i){
-    html+='<div class="ch" tabindex="0" data-i="'+i+'"><div class="nm">'+c.n+'</div><div class="cc">'+countryName(c.c)+'</div></div>';
-  });
-  if(!list.length) html='<div style="color:var(--muted);padding:40px;text-align:center">لا توجد قنوات في هذا التصنيف</div>';
-  document.getElementById('grid').innerHTML=html;
-  document.getElementById('grid').scrollTop=0;
-  Array.prototype.forEach.call(document.querySelectorAll('.ch'),function(el){
-    el.addEventListener('click',function(){ playChannel(list[+el.dataset.i]) });
-    el.addEventListener('keydown',function(e){if(e.key==='Enter')playChannel(list[+el.dataset.i])});
-  });
+function renderCats(){
+  var html=''; Object.keys(CATS).forEach(function(k){html+='<button data-cat="'+k+'" class="'+(curCat===k?'active':'')+'">'+CATS[k]+'</button>'});
+  document.getElementById('cats').innerHTML=html;
 }
-function setCat(cat){
-  curCat=cat; curCountry='all';
-  Array.prototype.forEach.call(document.querySelectorAll('#top button[data-cat]'),function(b){
-    b.classList.toggle('active', b.dataset.cat===cat);
-  });
-  renderChips(); renderGrid();
+function resetGrid(){
+  curList=(CH_DB.categories[curCat]||[]).filter(function(c){return curCountry==='all'||c.c===curCountry});
+  shown=0; document.getElementById('grid').innerHTML=''; document.getElementById('grid').scrollTop=0;
+  renderMore();
 }
-document.getElementById('chips').addEventListener('click',function(e){
-  var b=e.target.closest('button[data-cc]'); if(!b)return;
-  curCountry=b.dataset.cc; renderChips(); renderGrid();
-});
-Array.prototype.forEach.call(document.querySelectorAll('#top button[data-cat]'),function(b){
-  b.addEventListener('click',function(){setCat(b.dataset.cat)});
-});
+function renderMore(){
+  var grid=document.getElementById('grid');
+  var old=document.getElementById('more'); if(old) old.remove();
+  var next=curList.slice(shown,shown+PAGE);
+  var frag=document.createDocumentFragment();
+  next.forEach(function(c,i){
+    var idx=shown+i;
+    var el=document.createElement('div');
+    el.className='ch'; el.tabIndex=0;
+    el.innerHTML='<div class="tint" style="background:radial-gradient(circle at 75% 15%,'+(CAT_TINT[curCat]||CAT_TINT.general)+',transparent 60%)"></div><div class="info"><div class="nm"></div><div class="cc"></div></div>';
+    el.querySelector('.nm').textContent=c.n;
+    el.querySelector('.cc').textContent=countryName(c.c)+(curCat!=='general'?' · '+CATS[curCat]:'');
+    el.addEventListener('click',function(){playChannel(c)});
+    el.addEventListener('keydown',function(e){if(e.key==='Enter')playChannel(c)});
+    frag.appendChild(el);
+  });
+  grid.appendChild(frag);
+  shown+=next.length;
+  if(!curList.length){ grid.innerHTML='<div style="grid-column:1/-1;color:rgba(255,255,255,.5);padding:40px;text-align:center">لا توجد قنوات في هذا التصنيف</div>'; return }
+  if(shown<curList.length){
+    var btn=document.createElement('button'); btn.id='more'; btn.style.gridColumn='1/-1';
+    btn.textContent='تحميل المزيد ('+(curList.length-shown)+' قناة متبقية)';
+    btn.addEventListener('click',renderMore);
+    grid.appendChild(btn);
+  }
+}
+function setCat(cat){ curCat=cat; curCountry='all'; renderCats(); renderChips(); resetGrid(); }
+document.getElementById('cats').addEventListener('click',function(e){var b=e.target.closest('button[data-cat]');if(b)setCat(b.dataset.cat)});
+document.getElementById('chips').addEventListener('click',function(e){var b=e.target.closest('button[data-cc]');if(!b)return;curCountry=b.dataset.cc;renderChips();resetGrid()});
 
-/* ================= player (hls.js) ================= */
-var hlsInst=null;
+/* ===== player ===== */
+var hlsInst=null, playing=true;
 function playChannel(c){
-  if(!c) return;
   document.getElementById('pname').textContent=c.n;
+  document.getElementById('psub').textContent=countryName(c.c)+' · مباشر';
   var v=document.getElementById('vid');
   document.getElementById('player').style.display='block';
+  playing=true; document.getElementById('pplay').textContent='⏸';
   if(hlsInst){hlsInst.destroy();hlsInst=null}
   if(window.Hls && Hls.isSupported()){
     hlsInst=new Hls({enableWorker:true});
-    hlsInst.loadSource(c.u);
-    hlsInst.attachMedia(v);
-    hlsInst.on(Hls.Events.ERROR,function(ev,data){ if(data.fatal){ document.getElementById('pname').textContent=c.n+' — تعذر تشغيل هذه القناة الآن'; } });
+    hlsInst.loadSource(c.u); hlsInst.attachMedia(v);
+    hlsInst.on(Hls.Events.ERROR,function(ev,data){ if(data.fatal){ document.getElementById('psub').textContent='تعذر تشغيل هذه القناة الآن'; } });
   } else if(v.canPlayType('application/vnd.apple.mpegurl')){
     v.src=c.u;
   } else {
-    document.getElementById('pname').textContent=c.n+' — المتصفح لا يدعم هذا النوع من البث';
+    document.getElementById('psub').textContent='المتصفح لا يدعم هذا النوع من البث';
   }
 }
+document.getElementById('pplay').addEventListener('click',function(){
+  var v=document.getElementById('vid');
+  if(playing){v.pause();this.textContent='▶'}else{v.play();this.textContent='⏸'}
+  playing=!playing;
+});
+document.getElementById('pmute').addEventListener('click',function(){
+  var v=document.getElementById('vid'); v.muted=!v.muted; this.textContent=v.muted?'🔇':'🔊';
+});
 document.getElementById('pclose').addEventListener('click',function(){
   var v=document.getElementById('vid'); v.pause(); v.removeAttribute('src'); v.load();
   if(hlsInst){hlsInst.destroy();hlsInst=null}
   document.getElementById('player').style.display='none';
 });
 
-/* ================= settings (relay url + family code) ================= */
+/* ===== settings / smart home ===== */
 document.getElementById('btnSettings').addEventListener('click',function(){
   pinShow(function(){
     document.getElementById('relayUrl').value=LS_get('fh_relay','');
@@ -290,34 +340,26 @@ document.getElementById('btnSettings').addEventListener('click',function(){
 });
 document.getElementById('closeSettings').addEventListener('click',function(){document.getElementById('setOverlay').style.display='none'});
 document.getElementById('saveRelay').addEventListener('click',function(){
-  LS_set('fh_relay', document.getElementById('relayUrl').value.trim());
-  LS_set('fh_code', document.getElementById('famCode').value.trim());
+  LS_set('fh_relay',document.getElementById('relayUrl').value.trim());
+  LS_set('fh_code',document.getElementById('famCode').value.trim());
   document.getElementById('setOverlay').style.display='none';
 });
-document.getElementById('changePin').addEventListener('click',function(){
-  document.getElementById('setOverlay').style.display='none';
-  pinForceChange();
-});
+document.getElementById('changePin').addEventListener('click',function(){document.getElementById('setOverlay').style.display='none';pinForceChange()});
 
-/* ================= smart home (Tuya placeholder) ================= */
 document.getElementById('btnSmart').addEventListener('click',function(){
   pinShow(function(){
-    var relay=LS_get('fh_relay',''); var code=LS_get('fh_code','');
-    var box=document.getElementById('smartList');
-    if(!relay||!code){
-      document.getElementById('smartSub').textContent='أدخل رابط الخادم ورمز العائلة من الإعدادات أولاً، ثم زوّدني ببيانات حساب Tuya لتفعيل الأجهزة الذكية.';
-      box.innerHTML='';
-    } else {
-      document.getElementById('smartSub').textContent='لم يتم ربط أي جهاز ذكي حتى الآن. أرسل لي بيانات حساب Tuya Cloud (Access ID/Secret) وأسماء الأجهزة لتفعيل هذه القائمة.';
-      box.innerHTML='';
-    }
+    var relay=LS_get('fh_relay',''), code=LS_get('fh_code','');
+    document.getElementById('smartSub').textContent = (!relay||!code)
+      ? 'أدخل رابط الخادم ورمز العائلة من الإعدادات أولاً، ثم زوّدني ببيانات حساب Tuya لتفعيل الأجهزة الذكية.'
+      : 'لم يتم ربط أي جهاز ذكي حتى الآن. أرسل بيانات حساب Tuya Cloud وأسماء الأجهزة لتفعيل هذه القائمة.';
+    document.getElementById('smartList').innerHTML='';
     document.getElementById('smartOverlay').style.display='flex';
   });
 });
 document.getElementById('closeSmart').addEventListener('click',function(){document.getElementById('smartOverlay').style.display='none'});
 
-/* ================= init ================= */
-setCat('general');
+/* ===== init ===== */
+renderCats(); setCat('general');
 </script>
 </body>
 </html>
