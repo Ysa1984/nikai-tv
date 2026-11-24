@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>نتائج استبيان الرمال</title>
+<style>
+:root{--sand:#f6efe0;--card:#fffaf0;--ink:#3b2a1a;--mute:#8a7761;--accent:#b5562b;--line:#e6d8bd;--ok:#2f7d4f;--warn:#b57a12}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--sand);color:var(--ink);font-family:"Cairo","Segoe UI",Tahoma,system-ui,sans-serif;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding:16px 14px 70px}
+h1{font-size:24px;margin:14px 0 4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}
+.card h2{font-size:16px;margin:0 0 10px}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center}
+.tile b{display:block;font-size:28px;color:var(--accent)}
+.tile span{font-size:13px;color:var(--mute)}
+.row{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:14px}
+.row .l{flex:0 0 38%;min-width:0}
+.row .t{flex:1;height:20px;background:#efe4cd;border-radius:10px;position:relative;overflow:hidden}
+.row .t i{display:block;height:100%;background:var(--accent);border-radius:10px}
+.row .n{flex:0 0 74px;text-align:left;direction:ltr;font-size:13px;color:var(--mute)}
+.mark{position:absolute;top:0;bottom:0;width:2px;background:#3b2a1a;opacity:.55}
+.verdict{margin-top:10px;padding:10px 12px;border-radius:12px;font-weight:700;font-size:15px}
+.v-ok{background:#e3f3e8;color:var(--ok)} .v-warn{background:#fbf0d4;color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 4px;text-align:center;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:right}
+input[type=password]{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:16px;background:#fff}
+.btn{border:0;border-radius:14px;background:var(--accent);color:#fff;font:inherit;font-size:15px;font-weight:700;padding:11px 16px;cursor:pointer}
+.btn.alt{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.danger{background:#fff;color:#b3261e;border:1.5px solid #e0b4b0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.err{color:#b3261e;font-size:14px;min-height:20px;margin-top:6px}
+.note{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;font-size:14px}
+.small{font-size:13px;color:var(--mute)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📊 نتائج استبيان الرمال</h1>
+
+  <div id="gate" class="card">
+    <h2>مفتاح المنظّم</h2>
+    <input id="key" type="password" autocomplete="off" placeholder="أدخل المفتاح">
+    <div id="gErr" class="err"></div>
+    <button id="gBtn" class="btn" style="margin-top:8px;width:100%">دخول</button>
+  </div>
+
+  <div id="dash" class="hide"></div>
+</div>
+
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)}, THRESH=60;
+  var survey=null, rows=[];
+  function key(){try{return sessionStorage.getItem("rimal_admin")||""}catch(e){return ""}}
+  function setKey(k){try{sessionStorage.setItem("rimal_admin",k)}catch(e){}}
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+  function pct(n,t){return t?Math.round(n/t*100):0}
+  function api(path,opt){opt=opt||{};opt.headers=Object.assign({"x-admin-key":key()},opt.headers||{});return fetch("/api/rimal/"+path,opt).then(function(r){return r.json().then(function(j){return {status:r.status,body:j}})})}
+
+  function load(){
+    return Promise.all([fetch("survey.json").then(function(r){return r.json()}),api("results")]).then(function(res){
+      survey=res[0];
+      if(res[1].status!==200){return false}
+      rows=res[1].body.rows||[];return true;
+    });
+  }
+  function enter(){
+    var k=$("key").value.trim(); if(!k)return; setKey(k); $("gErr").textContent="";
+    load().then(function(ok){ if(ok){$("gate").classList.add("hide");$("dash").classList.remove("hide");draw()} else {$("gErr").textContent="المفتاح غير صحيح."} })
+    .catch(function(){$("gErr").textContent="تعذر الاتصال."});
+  }
+  $("gBtn").onclick=enter; $("key").addEventListener("keydown",function(e){if(e.key==="Enter")enter()});
+  if(key()){ load().then(function(ok){if(ok){$("gate").classList.add("hide");$("dash").classList.remove("hide");draw()}}) }
+
+  function q(id){return survey.questions.filter(function(x){return x.id===id})[0]}
+  function label(qq,k){var o=qq.options.filter(function(o){return o.k===k})[0];return o?o.l:k}
+  function counts(qq){
+    var c={};qq.options.forEach(function(o){c[o.k]=0});var n=0;
+    rows.forEach(function(r){var v=r.a[qq.id]; if(v===undefined)return; n++; (Array.isArray(v)?v:[v]).forEach(function(k){if(k in c)c[k]++})});
+    return {c:c,n:n};
+  }
+
+  function bars(qq,withMark){
+    var card=el("div","card"); card.appendChild(el("h2",null,qq.label));
+    var r=counts(qq);
+    if(!r.n){card.appendChild(el("div","small","لا توجد إجابات بعد."));return card}
+    var opts=qq.options.slice().sort(function(a,b){return r.c[b.k]-r.c[a.k]});
+    opts.forEach(function(o){
+      var row=el("div","row"), p=pct(r.c[o.k],r.n);
+      row.appendChild(el("div","l",o.l));
+      var t=el("div","t"), i=el("i"); i.style.width=p+"%"; t.appendChild(i);
+      if(withMark){var m=el("div","mark"); m.style.right=THRESH+"%"; t.appendChild(m)}
+      row.appendChild(t); row.appendChild(el("div","n",p+"% ("+r.c[o.k]+")"));
+      card.appendChild(row);
+    });
+    card.appendChild(el("div","small","عدد من أجاب عن السؤال: "+r.n));
+    return card;
+  }
+
+  function cross(qa,qb,title){
+    var card=el("div","card"); card.appendChild(el("h2",null,title));
+    var tb=el("table"), thead=el("tr"); thead.appendChild(el("th",null,""));
+    qa.options.forEach(function(o){thead.appendChild(el("th",null,o.l))}); thead.appendChild(el("th",null,"المجموع")); tb.appendChild(thead);
+    var any=false;
+    qb.options.forEach(function(ob){
+      var tr=el("tr"), tot=0, cells=[];
+      qa.options.forEach(function(oa){
+        var n=rows.filter(function(r){return r.a[qb.id]===ob.k&&r.a[qa.id]===oa.k}).length; tot+=n; cells.push(n);
+      });
+      if(!tot)return; any=true;
+      tr.appendChild(el("td",null,ob.l));
+      cells.forEach(function(n){tr.appendChild(el("td",null,n?(n+" ("+pct(n,tot)+"%)"):"–"))});
+      tr.appendChild(el("td",null,tot)); tb.appendChild(tr);
+    });
+    if(!any){card.appendChild(el("div","small","لا توجد بيانات كافية بعد."));return card}
+    card.appendChild(tb); return card;
+  }
+
+  function draw(){
+    var d=$("dash"); d.innerHTML="";
+    var total=rows.length;
+    var qt=q("timing"), qr=q("rating"), qv=q("volunteer");
+    var ct=counts(qt);
+    var rated=rows.filter(function(r){return r.a.rating}), avg=rated.length?(rated.reduce(function(s,r){return s+r.a.rating},0)/rated.length).toFixed(1):"–";
+    var vols=rows.filter(function(r){return r.a.volunteer==="yes"}).length;
+
+    var tiles=el("div","tiles");
+    [[total,"إجمالي المشاركين"],[pct(ct.c.national,ct.n)+"%","يفضلون إجازة اليوم الوطني"],[avg,"متوسط تقييم الرحلة ("+rated.length+")"],[vols,"مستعدون للمساعدة"]].forEach(function(t){
+      var x=el("div","tile"); x.appendChild(el("b",null,t[0])); x.appendChild(el("span",null,t[1])); tiles.appendChild(x);
+    });
+    d.appendChild(tiles);
+
+    // قرار الموعد
+    var dec=bars(qt,true); dec.firstChild.textContent="القرار الرئيسي: "+qt.label+"  (الخط = "+THRESH+"%)";
+    if(ct.n){
+      var top=Object.keys(ct.c).sort(function(a,b){return ct.c[b]-ct.c[a]})[0], tp=pct(ct.c[top],ct.n);
+      var v=el("div","verdict "+(tp>=THRESH?"v-ok":"v-warn"));
+      v.textContent=tp>=THRESH?("أغلبية واضحة لـ «"+label(qt,top)+"» ("+tp+"%) — يُعتمد.")
+                              :("لا توجد أغلبية واضحة (أعلى خيار «"+label(qt,top)+"» "+tp+"%). يُفضّل نقاش إضافي أو سنة تجريبية.");
+      dec.appendChild(v);
+      if(total<15){dec.appendChild(el("div","small","تنبيه: العينة صغيرة ("+total+"). انتظر مزيدًا من الإجابات قبل القرار."))}
+    }
+    d.appendChild(dec);
+
+    d.appendChild(cross(q("attended"),qt,"الموعد المفضل حسب حضور الرحلات السابقة"));
+    d.appendChild(cross(q("age"),qt,"الموعد المفضل حسب الفئة العمرية"));
+
+    ["reasons","barriers","duration","season","place","cost","attended","age","volunteer"].forEach(function(id){d.appendChild(bars(q(id)))});
+
+    var notes=rows.filter(function(r){return r.a.note});
+    var nc=el("div","card"); nc.appendChild(el("h2",null,"الاقتراحات والملاحظات ("+notes.length+")"));
+    if(!notes.length)nc.appendChild(el("div","small","لا توجد ملاحظات بعد."));
+    notes.forEach(function(r){nc.appendChild(el("div","note",r.a.note))});
+    d.appendChild(nc);
+
+    var act=el("div","actions");
+    var b1=el("button","btn","تحديث"); b1.onclick=function(){load().then(function(ok){if(ok)draw()})};
+    var b2=el("button","btn alt","تنزيل CSV"); b2.onclick=csv;
+    var b3=el("button","btn danger","مسح كل الإجابات"); b3.onclick=wipe;
+    act.appendChild(b1);act.appendChild(b2);act.appendChild(b3);d.appendChild(act);
+    d.appendChild(el("div","small","المسح يحذف كل الإجابات ويسمح للجميع بالمشاركة من جديد (مفيد بعد التجربة)."));
+  }
+
+  function csv(){
+    var cols=survey.questions, out=[["الوقت"].concat(cols.map(function(c){return c.label}))];
+    rows.forEach(function(r){
+      out.push([new Date(r.ts).toISOString()].concat(cols.map(function(c){
+        var v=r.a[c.id]; if(v===undefined)return "";
+        if(Array.isArray(v))return v.map(function(k){return label(c,k)}).join(" | ");
+        if(c.options)return label(c,v); return v;
+      })));
+    });
+    var txt="﻿"+out.map(function(r){return r.map(function(x){return '"'+String(x).replace(/"/g,'""')+'"'}).join(",")}).join("\n");
+    var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([txt],{type:"text/csv;charset=utf-8"})); a.download="rimal-survey.csv"; a.click();
+  }
+  function wipe(){
+    if(!confirm("سيتم حذف كل الإجابات نهائيًا. هل أنت متأكد؟"))return;
+    var t=prompt("للتأكيد اكتب: مسح"); if(t!=="مسح")return;
+    api("reset",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({confirm:"RESET"})}).then(function(r){
+      if(r.status===200){load().then(function(){draw()})} else alert("تعذر المسح");
+    });
+  }
+})();
+</script>
+</body>
+</html>

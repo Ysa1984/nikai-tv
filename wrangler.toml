@@ -1,5 +1,20 @@
 name = "nikai-tv"
+main = "worker.js"
 compatibility_date = "2026-01-01"
 
 [assets]
 directory = "."
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[durable_objects.bindings]]
+name = "RIMAL"
+class_name = "RimalStore"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RimalStore"]
+
+[vars]
+# بصمة (SHA-256) لمفتاح لوحة النتائج. المفتاح نفسه غير موجود هنا.
+ADMIN_HASH = "89f4e35d73bddbfb3d0c10cc2db8ae926c2d91d353d198cbafd834b30249d6c5"
