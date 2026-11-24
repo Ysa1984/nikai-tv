@@ -34,11 +34,17 @@ async function isAdmin(req, env) {
   return (await sha256hex(key)) === env.ADMIN_HASH;
 }
 
-// تنظيف الإجابات وفق تعريف الاستبيان فقط
+// هل السؤال ظاهر بحسب الإجابات السابقة؟ (كل الشروط يجب أن تتحقق)
+function visible(q, out) {
+  return !q.showIf || q.showIf.every((c) => c.in.includes(out[c.id]));
+}
+
+// تنظيف الإجابات وفق تعريف الاستبيان فقط (الأسئلة المخفية تُتجاهل)
 function sanitize(answers) {
   if (!answers || typeof answers !== "object") return null;
   const out = {};
   for (const q of SURVEY.questions) {
+    if (!visible(q, out)) continue;
     const v = answers[q.id];
     const empty = v === undefined || v === null || v === "" || (Array.isArray(v) && v.length === 0);
     if (empty) { if (q.required) return null; continue; }
@@ -75,14 +81,20 @@ export class RimalStore extends DurableObject {
   async epoch() { return this.#get("epoch"); }
   async add(data) {
     const now = Date.now();
-    const recent = [...this.sql.exec("SELECT COUNT(*) c FROM responses WHERE ts > ?", now - 60000)][0].c;
+    // تحديد المعدل بعدّاد دقيقة منفصل، حتى لا نحتاج حفظ وقت الإرسال الدقيق
+    const minute = String(Math.floor(now / 60000));
+    const rlMin = this.#get("rl_min"), rlCnt = Number(this.#get("rl_cnt") || 0);
+    const cnt = rlMin === minute ? rlCnt : 0;
     const total = [...this.sql.exec("SELECT COUNT(*) c FROM responses")][0].c;
-    if (recent >= 20 || total >= 500) return { ok: false };
-    this.sql.exec("INSERT INTO responses(ts,data) VALUES(?,?)", now, JSON.stringify(data));
+    if (cnt >= 20 || total >= 500) return { ok: false };
+    this.#set("rl_min", minute); this.#set("rl_cnt", String(cnt + 1));
+    // لحفظ السرية: نخزّن اليوم فقط وليس الساعة والدقيقة
+    const day = Math.floor(now / 86400000) * 86400000;
+    this.sql.exec("INSERT INTO responses(ts,data) VALUES(?,?)", day, JSON.stringify(data));
     return { ok: true, epoch: this.#get("epoch") };
   }
   async list() {
-    return [...this.sql.exec("SELECT ts, data FROM responses ORDER BY id")].map((r) => ({ ts: r.ts, a: JSON.parse(r.data) }));
+    return [...this.sql.exec("SELECT ts, data FROM responses ORDER BY RANDOM()")].map((r) => ({ ts: r.ts, a: JSON.parse(r.data) }));
   }
   async reset() {
     this.sql.exec("DELETE FROM responses");

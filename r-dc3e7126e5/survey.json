@@ -3,25 +3,52 @@
   "questions": [
     { "id": "age", "type": "single", "required": false, "label": "الفئة العمرية (اختياري)",
       "options": [ {"k":"u25","l":"أقل من 25"}, {"k":"a25","l":"25 – 35"}, {"k":"o35","l":"أكثر من 35"} ] },
+
     { "id": "attended", "type": "single", "required": true, "label": "هل حضرت رحلات الرمال السابقة؟",
-      "options": [ {"k":"never","l":"لم أحضر"}, {"k":"some","l":"مرة أو مرتين"}, {"k":"many","l":"عدة مرات"} ] },
+      "options": [ {"k":"never","l":"لم أحضر أي رحلة"}, {"k":"few","l":"مرة أو مرتين"}, {"k":"some","l":"عددًا منها"}, {"k":"most","l":"أغلب الرحلات"} ] },
+
     { "id": "timing", "type": "single", "required": true, "label": "ما الموعد الأنسب للرحلة السنوية؟",
       "options": [ {"k":"national","l":"إجازة اليوم الوطني"}, {"k":"weekend","l":"ويكند عادي"}, {"k":"any","l":"لا يفرق معي"} ] },
-    { "id": "reasons", "type": "multi", "required": false, "label": "ما سبب اختيارك؟ (يمكنك اختيار أكثر من واحد)",
-      "options": [ {"k":"longer","l":"الإجازة أطول"}, {"k":"free","l":"الجميع متفرغ"}, {"k":"weather","l":"الطقس مناسب"}, {"k":"cost","l":"التكلفة"}, {"k":"other","l":"غير ذلك"} ] },
-    { "id": "barriers", "type": "multi", "required": false, "label": "ما الذي يمنعك أحيانًا من الحضور؟",
-      "options": [ {"k":"work","l":"العمل"}, {"k":"study","l":"الدراسة"}, {"k":"cost","l":"التكلفة"}, {"k":"distance","l":"المسافة"}, {"k":"family","l":"ظروف عائلية"}, {"k":"none","l":"لا يوجد عائق"} ] },
+
+    { "id": "why_national", "type": "multi", "required": false, "label": "في حال اخترت اليوم الوطني: ما الذي يميّزه عندك؟ (يمكنك اختيار أكثر من واحد)",
+      "showIf": [ {"id":"timing","in":["national"]} ],
+      "options": [ {"k":"longer","l":"الإجازة أطول"}, {"k":"free","l":"الجميع متفرغ"}, {"k":"habit","l":"تعوّدنا عليه"}, {"k":"weather","l":"الطقس مناسب"} ] },
+
+    { "id": "why_weekend", "type": "multi", "required": false, "label": "في حال اخترت الويكند: ما الذي يجعله أنسب؟ (يمكنك اختيار أكثر من واحد)",
+      "showIf": [ {"id":"timing","in":["weekend"]} ],
+      "options": [ {"k":"noclash","l":"لا يتعارض مع سفر العائلة"}, {"k":"work","l":"أخف على العمل"}, {"k":"crowd","l":"ازدحام أقل"}, {"k":"cost","l":"خيارات أرخص"} ] },
+
+    { "id": "month", "type": "single", "required": false, "label": "أي شهر تفضّله للرحلة؟",
+      "showIf": [ {"id":"timing","in":["weekend"]} ],
+      "options": [ {"k":"nov","l":"نوفمبر"}, {"k":"dec","l":"ديسمبر"}, {"k":"jan","l":"يناير"}, {"k":"feb","l":"فبراير"} ] },
+
+    { "id": "flex", "type": "single", "required": false, "label": "هل يتغيّر حضورك حسب الموعد؟",
+      "options": [ {"k":"nat_only","l":"أحضر في اليوم الوطني فقط"}, {"k":"wk_only","l":"أحضر في الويكند فقط"}, {"k":"any","l":"أحضر في أي موعد"} ] },
+
+    { "id": "barriers", "type": "multi", "required": false, "label": "ما الذي يمنعك أحيانًا من الحضور؟ (يمكنك اختيار أكثر من واحد)",
+      "labelIf": [ {"when":[{"id":"attended","in":["never"]}], "label":"ما الذي منعك من الحضور؟ (يمكنك اختيار أكثر من واحد)"} ],
+      "showIf": [ {"id":"attended","in":["never","few","some"]} ],
+      "options": [ {"k":"work","l":"العمل"}, {"k":"study","l":"الدراسة"}, {"k":"cost","l":"التكلفة"}, {"k":"distance","l":"المسافة"}, {"k":"family","l":"ظروف عائلية"}, {"k":"passion","l":"فقدان الشغف أو الرغبة"}, {"k":"repeat","l":"تكرار البرنامج والأجواء"}, {"k":"none","l":"لا يوجد عائق"} ] },
+
+    { "id": "keep", "type": "multi", "required": false, "label": "ما الذي تحب أن نحافظ عليه في الرحلة؟ (يمكنك اختيار أكثر من واحد)",
+      "showIf": [ {"id":"attended","in":["most"]} ],
+      "options": [ {"k":"mood","l":"أجواء السمر والجلسات"}, {"k":"people","l":"اجتماع الشباب"}, {"k":"place","l":"المكان والوجهة"}, {"k":"food","l":"الأكل والطبخ"}, {"k":"fun","l":"الأنشطة والمسابقات"} ] },
+
     { "id": "duration", "type": "single", "required": false, "label": "مدة الرحلة المفضلة",
       "options": [ {"k":"day","l":"يوم واحد"}, {"k":"one","l":"ليلة واحدة"}, {"k":"two","l":"ليلتان"} ] },
-    { "id": "season", "type": "single", "required": false, "label": "الموسم المفضل",
-      "options": [ {"k":"autumn","l":"الخريف (أكتوبر – نوفمبر)"}, {"k":"winter","l":"الشتاء (ديسمبر – فبراير)"}, {"k":"spring","l":"الربيع (مارس – أبريل)"}, {"k":"any","l":"لا يفرق"} ] },
+
     { "id": "place", "type": "single", "required": false, "label": "نوع المكان المفضل",
       "options": [ {"k":"sand","l":"رمال"}, {"k":"beach","l":"شاطئ"}, {"k":"mountain","l":"جبل"}, {"k":"farm","l":"مزرعة أو استراحة"} ] },
+
     { "id": "cost", "type": "single", "required": false, "label": "التكلفة المناسبة للفرد",
       "options": [ {"k":"low","l":"أقل من 10 ر.ع"}, {"k":"mid","l":"10 – 20 ر.ع"}, {"k":"high","l":"أكثر من 20 ر.ع"} ] },
-    { "id": "rating", "type": "rating", "required": false, "label": "قيّم الرحلة الأخيرة (إن حضرتها)" },
+
+    { "id": "rating", "type": "rating", "required": false, "label": "قيّم الرحلة الأخيرة التي حضرتها",
+      "showIf": [ {"id":"attended","in":["few","some","most"]} ] },
+
     { "id": "volunteer", "type": "single", "required": false, "label": "هل تساعد في تنظيم الرحلات؟",
       "options": [ {"k":"yes","l":"نعم"}, {"k":"maybe","l":"ربما"}, {"k":"no","l":"لا"} ] },
-    { "id": "note", "type": "text", "required": false, "max": 500, "label": "اقتراح أو ملاحظة تريد إيصالها" }
+
+    { "id": "note", "type": "text", "required": false, "max": 500, "label": "اقتراح أو ملاحظة تريد إيصالها (لا تكتب اسمك إن أردت البقاء مجهولًا)" }
   ]
 }

@@ -4,45 +4,163 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>استبيان رحلة الرمال</title>
+<meta name="theme-color" content="#1c2650">
+<title>استبيان رحلة الرمال · بدية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--sand:#f6efe0;--card:#fffaf0;--ink:#3b2a1a;--mute:#8a7761;--accent:#b5562b;--accent2:#e8c28a;--line:#e6d8bd;--ok:#2f7d4f}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--sand);color:var(--ink);font-family:"Cairo","Segoe UI",Tahoma,system-ui,sans-serif;line-height:1.6}
-.wrap{max-width:560px;margin:0 auto;padding:18px 16px 60px}
-header{text-align:center;padding:26px 6px 10px}
-.logo{font-size:44px;line-height:1}
-h1{margin:6px 0 4px;font-size:26px;font-weight:800}
-.sub{color:var(--mute);font-size:15px;margin:0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 2px 0 rgba(181,86,43,.06)}
-.card h2{font-size:17px;margin:0 0 12px;font-weight:700}
+:root{
+  --night:#1c2650; --dusk:#7a3f6e; --ember:#e0713a; --glow:#f6b95e;
+  --sand:#f4e6c8; --sand2:#efdcb5; --card:#fff9ec; --ink:#3a2214; --mute:#8b6f55;
+  --accent:#c4552a; --accent2:#e58a3c; --line:#e5d0a6; --ok:#2f7d4f;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;color:var(--ink);font-family:"Tajawal","Segoe UI",Tahoma,system-ui,sans-serif;line-height:1.7;
+  background:var(--sand);
+  background-image:repeating-linear-gradient(172deg,rgba(196,85,42,.045) 0 2px,transparent 2px 22px)}
+.hero{position:relative;height:270px;overflow:hidden;background:var(--night)}
+.hero svg{position:absolute;inset:0;width:100%;height:100%}
+.hero .txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:28px;text-align:center;color:#fff3d6;text-shadow:0 2px 14px rgba(20,12,40,.55)}
+.chip{font-size:13px;letter-spacing:.2px;background:rgba(255,243,214,.14);border:1px solid rgba(255,243,214,.35);border-radius:999px;padding:3px 14px;backdrop-filter:blur(3px)}
+.hero h1{font-family:"Reem Kufi","Tajawal",sans-serif;font-size:36px;font-weight:700;margin:10px 0 0;line-height:1.2}
+.hero h1 small{display:block;font-size:17px;font-weight:500;color:var(--glow);letter-spacing:1px;margin-top:2px}
+.wrap{max-width:560px;margin:-58px auto 0;padding:0 14px 70px;position:relative}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 6px 18px -10px rgba(122,63,40,.35)}
+.intro p{margin:0;font-size:17px;line-height:1.95}
+.intro b{color:var(--accent)}
+.anon{margin-top:14px;border-radius:16px;background:linear-gradient(180deg,#eef6ee,#e4f0e6);border:1px solid #bcd9c2;padding:12px 14px}
+.anon h3{margin:0 0 6px;font-size:16px;color:var(--ok);display:flex;gap:6px;align-items:center}
+.anon ul{margin:0;padding:0 18px 0 0;font-size:14.5px;color:#27553a;line-height:1.85}
+.anon li{margin:1px 0}
+.q{position:relative;padding-top:20px;animation:rise .35s ease both}
+.q .no{position:absolute;top:-12px;right:16px;min-width:30px;height:30px;padding:0 8px;border-radius:15px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px -2px rgba(196,85,42,.6)}
+.q.sub{border-right:4px solid var(--glow)}
+.q.miss{outline:2px solid #d9534f;outline-offset:2px}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.q h2{font-size:17px;margin:0 0 12px;font-weight:700;line-height:1.7}
 .req{color:var(--accent)}
 .opts{display:flex;flex-wrap:wrap;gap:8px}
-.opt{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;color:var(--ink);cursor:pointer;min-height:44px}
-.opt[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.opt{border:1.5px solid var(--line);background:#fffdf6;border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;color:var(--ink);cursor:pointer;min-height:44px;transition:transform .12s,background .15s,border-color .15s}
+.opt:active{transform:scale(.96)}
+.opt[aria-pressed=true]{background:linear-gradient(135deg,var(--accent2),var(--accent));border-color:var(--accent);color:#fff;font-weight:700}
+.opt[aria-pressed=true]::before{content:"✓ "}
 .stars{display:flex;gap:6px;direction:ltr;justify-content:center}
-.star{font-size:34px;background:none;border:0;cursor:pointer;color:#d9c8a6;padding:2px 6px}
-.star.on{color:#e0a21b}
-textarea,input[type=text],input[type=password]{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+.star{font-size:36px;background:none;border:0;cursor:pointer;color:#dcc9a4;padding:2px 6px;transition:transform .12s}
+.star:active{transform:scale(.88)}
+.star.on{color:#e8a31c;text-shadow:0 0 12px rgba(246,185,94,.7)}
+textarea,input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:16px;background:#fffdf6;color:var(--ink)}
 textarea{min-height:96px;resize:vertical}
-.btn{display:block;width:100%;border:0;border-radius:16px;background:var(--accent);color:#fff;font:inherit;font-size:18px;font-weight:800;padding:14px;cursor:pointer;margin-top:10px}
+textarea:focus,input:focus{outline:2px solid var(--accent2);border-color:transparent}
+.btn{display:block;width:100%;border:0;border-radius:16px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font:inherit;font-size:18px;font-weight:800;padding:14px;cursor:pointer;margin-top:12px;box-shadow:0 8px 18px -8px rgba(196,85,42,.7)}
 .btn[disabled]{opacity:.5}
 .err{color:#b3261e;font-size:14px;min-height:20px;margin-top:8px}
 .center{text-align:center}
-.big{font-size:54px}
-.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:8px 0 0}
-.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
-.hide{display:none}
-.small{font-size:13px;color:var(--mute)}
+.big{font-size:54px;line-height:1.2}
+.hide{display:none!important}
+.small{font-size:13.5px;color:var(--mute)}
+.prog{position:sticky;top:0;z-index:5;margin:0 -14px;padding:8px 14px 6px;background:linear-gradient(180deg,var(--sand) 70%,rgba(244,230,200,0))}
+.prog .bar{height:8px;background:var(--sand2);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.prog .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--glow),var(--ember),var(--accent));transition:width .3s}
+.prog .lbl{font-size:12.5px;color:var(--mute);margin-top:3px;text-align:left;direction:ltr}
+.foot{text-align:center;color:var(--mute);font-size:12.5px;margin-top:26px}
+.foot span{color:var(--accent)}
+@media(min-width:520px){.hero h1{font-size:44px}.hero{height:300px}}
 </style>
 </head>
 <body>
+
+<div class="hero" aria-hidden="false">
+  <svg viewBox="0 0 400 270" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="كثبان رملية عند الغروب وسيارة دفع رباعي وخيمة وموقد نار وأطفال يقفزون">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#171f47"/><stop offset=".38" stop-color="#4b3270"/>
+        <stop offset=".62" stop-color="#b9506a"/><stop offset=".82" stop-color="#ee7d3d"/><stop offset="1" stop-color="#f8c066"/>
+      </linearGradient>
+      <radialGradient id="sun" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#fff1c2"/><stop offset=".35" stop-color="#ffd27a" stop-opacity=".95"/><stop offset="1" stop-color="#ffb04a" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8894a"/><stop offset="1" stop-color="#c9602f"/></linearGradient>
+      <linearGradient id="d2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6532b"/><stop offset="1" stop-color="#8e3a1f"/></linearGradient>
+      <radialGradient id="fire" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffd27a" stop-opacity=".85"/><stop offset="1" stop-color="#ff8a2a" stop-opacity="0"/></radialGradient>
+      <g id="kidA" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M-2 5 L-6.5 -1.5 M2 5 L6.5 -2" stroke="#3a1c10" stroke-width="2.2" fill="none"/>
+        <path d="M-1.6 12 L-4.5 15 L-3 19.5 M1.6 12 L5 14 L7 18" stroke="#3a1c10" stroke-width="2.3" fill="none"/>
+        <path d="M-2.8 3.2 Q0 2.2 2.8 3.2 L4.6 13 Q0 14.4 -4.6 13Z" fill="#f6ead0" stroke="#3a1c10" stroke-width=".7"/>
+        <circle cx="0" cy="-.2" r="2.7" fill="#3a1c10"/><path d="M-2.7 -1.2 Q0 -4.6 2.7 -1.2Z" fill="#f6ead0"/>
+      </g>
+      <g id="kidB" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M-2 5 L-6 8 M2 5 L6 -3" stroke="#3a1c10" stroke-width="2.2" fill="none"/>
+        <path d="M-1.6 12 L-6 14.5 L-8.5 12.5 M1.6 12 L3 17 L1.5 21" stroke="#3a1c10" stroke-width="2.3" fill="none"/>
+        <path d="M-2.8 3.2 Q0 2.2 2.8 3.2 L4.4 13 Q0 14.2 -4.4 13Z" fill="#f6ead0" stroke="#3a1c10" stroke-width=".7"/>
+        <circle cx="0" cy="-.2" r="2.7" fill="#3a1c10"/><path d="M-2.7 -1.2 Q0 -4.6 2.7 -1.2Z" fill="#f6ead0"/>
+      </g>
+      <g id="camel" fill="#2a130b" stroke="#2a130b" stroke-linecap="round">
+        <ellipse cx="20" cy="13" rx="13" ry="5.6" stroke="none"/>
+        <ellipse cx="19" cy="7.5" rx="4" ry="4.2" stroke="none"/>
+        <path d="M31 11 Q38 6 37 -1" fill="none" stroke-width="3.6"/>
+        <ellipse cx="38.6" cy="-2.2" rx="4.8" ry="2.5" transform="rotate(-18 38.6 -2.2)" stroke="none"/>
+        <path d="M11 17 L10 30 M16 18 L16 30 M25 18 L25 30 M30 17 L31 30" fill="none" stroke-width="2.3"/>
+        <path d="M7 12 Q3 16 4 22" fill="none" stroke-width="1.6"/>
+      </g>
+    </defs>
+    <rect width="400" height="270" fill="url(#sky)"/>
+    <g fill="#fff6dc">
+      <circle cx="34" cy="26" r="1.2"/><circle cx="82" cy="52" r="1"/><circle cx="130" cy="20" r="1.4"/><circle cx="176" cy="60" r=".9"/>
+      <circle cx="224" cy="30" r="1.2"/><circle cx="262" cy="14" r="1"/><circle cx="318" cy="46" r="1.3"/><circle cx="366" cy="22" r="1"/>
+      <circle cx="56" cy="78" r=".8"/><circle cx="300" cy="84" r=".8"/><circle cx="388" cy="70" r=".9"/>
+    </g>
+    <path d="M338 24a17 17 0 1 0 17 22a14 14 0 1 1 -17 -22z" fill="#fbe7b5" opacity=".95"/>
+    <circle cx="318" cy="176" r="70" fill="url(#sun)"/>
+    <circle cx="318" cy="181" r="19" fill="#fff0bd"/>
+    <path d="M0 188 C50 172 96 176 150 190 C210 205 268 186 330 178 C362 174 384 178 400 184 L400 270 L0 270Z" fill="url(#d1)"/>
+    <path d="M0 214 C42 196 96 192 150 204 C214 218 262 206 318 196 C352 190 380 194 400 200 L400 270 L0 270Z" fill="url(#d2)"/>
+    <!-- مخيم: خيمة وموقد نار وأطفال يقفزون -->
+    <circle cx="112" cy="192" r="26" fill="url(#fire)"/>
+    <path d="M46 199 L74 172 L102 199Z" fill="#ead6a6" stroke="#2a130b" stroke-width="1"/>
+    <path d="M74 172 L74 199" stroke="#b99a63" stroke-width="1"/>
+    <path d="M66 199 L74 182 L82 199Z" fill="#2a130b"/>
+    <path d="M74 172 L74 166" stroke="#2a130b" stroke-width="1.4"/><path d="M74 166 l7 2 l-7 2z" fill="#c4552a"/>
+    <path d="M104 199 L120 195 M104 195 L120 199" stroke="#2a130b" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M112 196 C106 190 110 186 112 180 C114 186 118 190 112 196Z" fill="#ff9a2e"/>
+    <path d="M112 196 C109 192 111 190 112 187 C113 190 115 192 112 196Z" fill="#ffe27a"/>
+    <use href="#kidA" transform="translate(138 174) scale(.85)"/>
+    <use href="#kidB" transform="translate(154 168) scale(.85)"/>
+    <use href="#kidA" transform="translate(170 177) scale(.8) rotate(8)"/>
+    <use href="#kidB" transform="translate(124 180) scale(.8) scale(-1 1)"/>
+    <!-- سيارة دفع رباعي فوق الكثيب -->
+    <g transform="translate(236 191) rotate(-7) scale(.95)">
+      <circle cx="-4" cy="14" r="5" fill="#e8a56a" opacity=".55"/><circle cx="-11" cy="13" r="4" fill="#e8a56a" opacity=".4"/><circle cx="-17" cy="12" r="3" fill="#e8a56a" opacity=".3"/>
+      <path d="M0 15 L0 8 L7 7 L11 1 L27 1 L33 7 L41 8 L41 15Z" fill="#2a130b"/>
+      <path d="M12 2.6 L18 2.6 L18 7 L9 7Z M20 2.6 L26 2.6 L30 7 L20 7Z" fill="#f6b95e" opacity=".75"/>
+      <path d="M11 -0.5 L27 -0.5" stroke="#2a130b" stroke-width="1.4"/>
+      <rect x="-3" y="5" width="3" height="7" rx="1.4" fill="#2a130b"/>
+      <circle cx="40" cy="10" r="1.6" fill="#ffe9a0"/>
+      <circle cx="9" cy="16" r="4.6" fill="#140803" stroke="#6a4a3a" stroke-width="1"/><circle cx="32" cy="16" r="4.6" fill="#140803" stroke="#6a4a3a" stroke-width="1"/>
+    </g>
+    <path d="M0 238 C58 222 110 224 170 236 C240 250 300 238 360 228 C380 225 392 226 400 228 L400 270 L0 270Z" fill="#f4e6c8"/>
+    <path d="M0 252 C70 244 130 250 190 256 C260 264 330 250 400 246 L400 270 L0 270Z" fill="#efdcb5" opacity=".9"/>
+  </svg>
+  <div class="txt">
+    <span class="chip">رحلات الرمال السنوية</span>
+    <h1>استبيان رحلة الرمال<small>بِدِيَّة</small></h1>
+  </div>
+</div>
+
 <div class="wrap">
-  <header>
-    <div class="logo">🏜️</div>
-    <h1>استبيان رحلة الرمال</h1>
-    <p class="sub">منذ 2013 ونحن نجتمع كل عام. رأيك يرسم شكل السنوات القادمة.<br>الإجابات مجهولة تمامًا، والاستبيان أقل من دقيقتين.</p>
-  </header>
+
+  <div class="card intro">
+    <p>منذ ما يقارب <b>14 عامًا</b> ونحن نلتقي في الرمال، وللرحلة طابعها الذي نحب. ولكي تتسع لمن لم يتمكن من الحضور وتزداد جمالًا، <b>شاركنا رأيك</b>. دقيقتان، وإجابتك مجهولة.</p>
+    <div class="anon">
+      <h3>🔒 إجابتك مجهولة فعلًا</h3>
+      <ul>
+        <li>لا نسأل عن اسمك ولا رقمك، ولا نحفظ أي شيء يدل عليك.</li>
+        <li>لا نحفظ وقت إرسالك بدقة، ولا ترتيب الإجابات يكشف صاحبها.</li>
+        <li>المنظّم يرى النتائج بلا أسماء، ولا يعرف من كتب ماذا.</li>
+        <li>نضع علامة على جهازك فقط لمنع تكرار المشاركة، وهي غير مرتبطة بإجاباتك.</li>
+      </ul>
+    </div>
+  </div>
 
   <div id="loading" class="card center small">جارٍ التحميل…</div>
 
@@ -53,30 +171,33 @@ textarea{min-height:96px;resize:vertical}
   </div>
 
   <div id="gate" class="card hide">
-    <h2>أدخل رمز العائلة</h2>
+    <h2 style="margin-top:0">🏕️ أدخل رمز العائلة</h2>
+    <p class="small" style="margin:0 0 10px">الرمز اسم المكان الذي نقصده كل عام.</p>
     <input id="code" type="text" autocomplete="off" autocapitalize="off" placeholder="رمز العائلة">
     <div id="gateErr" class="err"></div>
     <button id="gateBtn" class="btn">متابعة</button>
   </div>
 
   <form id="form" class="hide" onsubmit="return false">
-    <div class="bar"><i id="prog"></i></div>
+    <div class="prog"><div class="bar"><i id="prog"></i></div><div class="lbl" id="plbl"></div></div>
     <div id="qs"></div>
     <div id="formErr" class="err center"></div>
-    <button id="send" class="btn">إرسال</button>
+    <button id="send" class="btn">إرسال رأيي</button>
   </form>
 
   <div id="thanks" class="card center hide">
     <div class="big">🤲</div>
     <h2>شكرًا لمشاركتك</h2>
-    <p class="small">تم تسجيل إجابتك بنجاح. جزاك الله خيرًا.</p>
+    <p class="small">تم تسجيل إجابتك بدون اسم. جزاك الله خيرًا، ونراكم في الرمال بإذن الله.</p>
   </div>
+
+  <div class="foot">رحلات الرمال · <span>بدية</span></div>
 </div>
 
 <script>
 (function(){
   var LS="rimal_epoch_v1", $=function(i){return document.getElementById(i)};
-  var survey=null, answers={}, code="";
+  var survey=null, answers={}, code="", ui={};
 
   function show(id){["loading","done","gate","form","thanks"].forEach(function(x){$(x).classList.toggle("hide",x!==id)})}
   function api(path,opt){return fetch("/api/rimal/"+path,Object.assign({credentials:"same-origin"},opt||{})).then(function(r){return r.json().then(function(j){return {status:r.status,body:j}})})}
@@ -105,24 +226,30 @@ textarea{min-height:96px;resize:vertical}
   $("code").addEventListener("keydown",function(e){if(e.key==="Enter")enterGate()});
 
   function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+  function has(v){return v!==undefined&&v!==null&&v!==""&&(!Array.isArray(v)||v.length>0)}
 
-  function progress(){
-    var total=survey.questions.length, n=0;
-    survey.questions.forEach(function(q){var v=answers[q.id];if(v&&(!Array.isArray(v)||v.length))n++});
-    $("prog").style.width=Math.round(n/total*100)+"%";
+  // شروط الظهور: كل الشروط يجب أن تتحقق
+  function condOk(list){return !list||list.every(function(c){return c.in.indexOf(answers[c.id])>=0})}
+  function isVisible(q){return condOk(q.showIf)}
+  function labelFor(q){
+    if(q.labelIf)for(var i=0;i<q.labelIf.length;i++){if(condOk(q.labelIf[i].when))return q.labelIf[i].label}
+    return q.label;
   }
 
   function render(){
-    var box=$("qs"); box.innerHTML="";
+    var box=$("qs"); box.innerHTML=""; ui={};
     survey.questions.forEach(function(q){
-      var card=el("div","card"), h=el("h2",null,q.label);
-      if(q.required){var s=el("span","req"," *");h.appendChild(s)}
-      card.appendChild(h);
+      var card=el("div","card q"+(q.showIf?" sub":"")), no=el("div","no","");
+      var h=el("h2",null,""), ht=el("span",null,q.label); h.appendChild(ht);
+      if(q.required){h.appendChild(el("span","req"," *"))}
+      card.appendChild(no); card.appendChild(h);
+      var reset=function(){};
       if(q.type==="single"||q.type==="multi"){
         var wrap=el("div","opts");
         q.options.forEach(function(o){
           var b=el("button","opt",o.l); b.type="button"; b.setAttribute("aria-pressed","false");
           b.onclick=function(){
+            card.classList.remove("miss");
             if(q.type==="single"){
               var same=answers[q.id]===o.k; answers[q.id]=same?undefined:o.k;
               [].forEach.call(wrap.children,function(c){c.setAttribute("aria-pressed","false")});
@@ -132,35 +259,58 @@ textarea{min-height:96px;resize:vertical}
               if(i>=0)a.splice(i,1);else a.push(o.k);
               answers[q.id]=a; b.setAttribute("aria-pressed",i>=0?"false":"true");
             }
-            progress();
+            update();
           };
           wrap.appendChild(b);
         });
         card.appendChild(wrap);
+        reset=function(){[].forEach.call(wrap.children,function(c){c.setAttribute("aria-pressed","false")})};
       }else if(q.type==="rating"){
         var st=el("div","stars");
         for(var i=1;i<=5;i++)(function(i){
           var b=el("button","star","★"); b.type="button"; b.setAttribute("aria-label",i+" من 5");
-          b.onclick=function(){answers[q.id]=(answers[q.id]===i)?undefined:i; [].forEach.call(st.children,function(c,k){c.classList.toggle("on",answers[q.id]&&k<answers[q.id])}); progress()};
+          b.onclick=function(){answers[q.id]=(answers[q.id]===i)?undefined:i; paint(); update()};
           st.appendChild(b);
         })(i);
+        var paint=function(){[].forEach.call(st.children,function(c,k){c.classList.toggle("on",!!answers[q.id]&&k<answers[q.id])})};
         card.appendChild(st);
+        reset=paint;
       }else if(q.type==="text"){
         var t=el("textarea"); t.maxLength=q.max||500; t.placeholder="اكتب هنا…";
-        t.oninput=function(){answers[q.id]=t.value;progress()};
+        t.oninput=function(){answers[q.id]=t.value;update()};
         card.appendChild(t);
+        reset=function(){t.value=""};
       }
       box.appendChild(card);
+      ui[q.id]={card:card,no:no,ht:ht,reset:reset,shown:null};
     });
-    progress();
+    update();
+  }
+
+  // يُحدّث الظهور والترقيم والتقدّم بعد كل إجابة
+  function update(){
+    var n=0, done=0;
+    survey.questions.forEach(function(q){
+      var u=ui[q.id], vis=isVisible(q);
+      if(!vis&&has(answers[q.id])){delete answers[q.id]; u.reset()}
+      if(!vis)delete answers[q.id];
+      u.card.classList.toggle("hide",!vis);
+      if(vis&&u.shown!==true){u.card.style.animation="none";void u.card.offsetWidth;u.card.style.animation=""}
+      u.shown=vis;
+      if(vis){n++; u.no.textContent=n; u.ht.textContent=labelFor(q); if(has(answers[q.id]))done++}
+    });
+    $("prog").style.width=Math.round(done/n*100)+"%";
+    $("plbl").textContent=done+" / "+n;
   }
 
   $("send").onclick=function(){
     $("formErr").textContent="";
-    for(var i=0;i<survey.questions.length;i++){
-      var q=survey.questions[i], v=answers[q.id];
-      if(q.required&&(!v||(Array.isArray(v)&&!v.length))){ $("formErr").textContent="فضلًا أجب عن الأسئلة المطلوبة (*)"; return }
-    }
+    var first=null;
+    survey.questions.forEach(function(q){
+      var u=ui[q.id]; u.card.classList.remove("miss");
+      if(isVisible(q)&&q.required&&!has(answers[q.id])){u.card.classList.add("miss");if(!first)first=u.card}
+    });
+    if(first){ $("formErr").textContent="فضلًا أجب عن الأسئلة المطلوبة (*)"; first.scrollIntoView({behavior:"smooth",block:"center"}); return }
     $("send").disabled=true;
     post("submit",{code:code,answers:answers,ls:lsGet()}).then(function(r){
       if(r.body.ok){lsSet(r.body.epoch);show("thanks");window.scrollTo(0,0)}
