@@ -1,0 +1,7 @@
+worker.js
+wrangler.toml
+.assetsignore
+DEPLOY.md
+node_modules
+.git
+.wrangler
